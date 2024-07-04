@@ -15,7 +15,7 @@ app.listen(PORT, () => {
 
 // Setup SerialPort with the correct path and baudRate
 const port = new SerialPort({
-  path: '/dev/cu.usbserial-1310',  // Confirm this is the correct serial port path on your machine
+  path: '/dev/cu.usbserial-21310',  // Confirm this is the correct serial port path on your machine
   baudRate: 9600
 });
 
@@ -35,19 +35,16 @@ function sendDataToBackend(sensorOutput) {
       let floatValue = parseFloat(sensorOutput);
       if (!isNaN(floatValue)) {
           console.log(`Sending value to API: `, floatValue);
-          // const apiUrl = `${process.env.BASE_URL}/levels/19`; // Ensure BASE_URL is defined in your .env file
-          // const payload = {
-          //     ripenessValue: floatValue,
-          //     fnvType: 'BANANA'
-          // };
+          const apiUrl = process.env.BASE_URL; // Ensure BASE_URL is defined in your .env file
+          const payload = {
+              ripenessValue: floatValue,
+              fnvType: 'BANANA'
+          };
 
-          // axios.post(apiUrl, payload)
-          //     .then(response => {
-          //         console.log('Data sent successfully:', response.data);
-          //     })
-          //     .catch(error => {
-          //         console.error('Failed to send data:', error);
-          //     });
+          axios.put(apiUrl, payload)
+              .catch(error => {
+                  console.error('Failed to send data:', error);
+              });
       } else {
           console.error('Invalid float value:', sensorOutput);
       }
